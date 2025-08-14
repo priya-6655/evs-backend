@@ -39,6 +39,9 @@ app.use('/electionResults', electionResultsRoutes)
 
 app.use('/ELectoral', EORoutes)
 
+app.get('/', (req, res) => {
+    res.send('Welcome to EVS API')
+})
 sequelize.sync().then(() => {
     console.log('✅ DB synced');
     app.listen(PORT, () => {
