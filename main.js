@@ -44,24 +44,11 @@ app.get('/', (req, res) => {
 })
 sequelize.sync().then(() => {
     console.log('✅ DB synced');
-    app.listen(PORT, () => {
-        console.log(`Server running on http://localhost:${PORT}`)
-    })
+    // app.listen(PORT, () => {
+    //     console.log(`Server running on http://localhost:${PORT}`)
+    // })
 }).catch((err) => {
     console.error('❌ DB connection error:', err);
 });
 
-
-//Admin email register
-
-app.post('/api/register', (req, res) => {
-    const { name, password, email } = req.body
-    console.log('Received:', name, password, email)
-    res.json({ message: "Email register successfully" })
-})
-
-
-
-
-
-
+module.exports = app;
