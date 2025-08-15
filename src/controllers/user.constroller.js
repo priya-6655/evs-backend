@@ -69,8 +69,8 @@ const userReg = async (req, res) => {
         return res.status(201).json({ message: "Please check your mail for User ID", data: userRegister })
 
     } catch (error) {
-        console.log("Error fetching data", error)
-        return res.status(500).json({ err: "Failed to register" })
+        console.log("Error fetching data", error?.errors[0]?.message)
+        return res.status(500).json({ err: error?.errors[0]?.message || "Failed to register" })
     }
 }
 
