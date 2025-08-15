@@ -2,7 +2,6 @@ const ElectoralModel = require('../model/EO.model')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
 
-
 const EOLogin = async (req, res) => {
     const { EOusrname, EOpassword } = req.body
 
@@ -122,4 +121,14 @@ const resetPassword = async (req, res) => {
     }
 }
 
-module.exports = { EOLogin, forgotEOPass, resetPassword }
+
+const addEO = async (req, res) => {
+    try {
+        const { EOUser, EOPassword, EOMail } = req.body;
+        const newEO = await ElectoralModel.create({ EOUser, EOPassword, EOMail });
+        res.status(201).json(newEO);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to create EO' });
+    }
+}
+module.exports = { EOLogin, forgotEOPass, resetPassword, addEO }
