@@ -66,8 +66,8 @@ const userReg = async (req, res) => {
                 else console.log("Mail sent:", info.response);
             })
         })
-
-        return res.status(201).json({ message: "Added Successfully", data: userRegister })
+        const { password, ...rest } = userRegister;
+        return res.status(201).json({ message: "Please check your mail for User ID", data: rest })
 
     } catch (error) {
         console.log("Error fetching data", error)
