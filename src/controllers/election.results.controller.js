@@ -81,7 +81,8 @@ const getCountedResults = async (req, res) => {
             attributes: [
                 [col('candidate.party.partyName'), 'partyName'],
                 [col('election.district'), 'district'],
-                [fn('COUNT', col('ElectionResults.candidateKey')), 'totalVotes']
+                [col('candidate.candiName'), 'candidateName'],
+                [fn('COUNT', col('electionResults.candidateKey')), 'totalVotes']
             ],
             include: [{
                 model: Candidate,
@@ -99,11 +100,35 @@ const getCountedResults = async (req, res) => {
                 attributes: []
             }
             ],
-            group: ['candidate.party.partyName', 'election.district'],
+            group: ['candidate.party.partyName', 'election.district', 'candidate.candiName'],
             raw: true
         });
 
-        res.json(results);
+        // res.json(results);
+
+        // 🔹 Post-process to add Win/Lose
+        const grouped = results.reduce((acc, curr) => {
+            const district = curr.district;
+            if (!acc[district]) acc[district] = [];
+            acc[district].push(curr);
+            return acc;
+        }, {});
+
+        const finalResults = [];
+        for (const district in grouped) {
+            const candidates = grouped[district];
+            const maxVotes = Math.max(...candidates.map(c => parseInt(c.totalVotes)));
+
+            candidates.forEach(c => {
+                finalResults.push({
+                    ...c,
+                    result: parseInt(c.totalVotes) === maxVotes ? "Win" : "Lose"
+                });
+            });
+        }
+
+        res.json(finalResults);
+
     } catch (error) {
         console.error('Error fetching counted results:', error);
         res.status(500).json({ error: 'Internal Server Error' });
