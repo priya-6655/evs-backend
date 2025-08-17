@@ -104,6 +104,23 @@ const deleteElect = async (req, res) => {
     }
 }
 
+const getVotedElection = async (req, res) => {
+    try {
+        const today = new Date().toISOString().split('T')[0]
+        const current = await ElectModel.findAll({
+            where: {
+                countingDate: {
+                    [Op.eq]: today
+                }
+            },
+            order: [['date', 'ASC']]
+        });
+        res.json({ data: current })
+    } catch (err) {
+        console.log("Error fetching elections", err)
+        res.status(500).json({ message: "Failed to fetch election data" })
+    }
+}
 
 
-module.exports = { addElection, getUpcomingElection, filterElection, editElect, deleteElect };
+module.exports = { addElection, getUpcomingElection, filterElection, editElect, deleteElect, getVotedElection };
